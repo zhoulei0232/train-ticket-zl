@@ -73,6 +73,7 @@
             }else{
                 dispatch(setTo(city))
             }
+            dispatch(hideCitySelector())
         }
     }
 
@@ -104,8 +105,9 @@
             if(isLoadingCityData){
                 return
             }
-            const cache = JSON.parse(localStorage.getItem('city_data_cache')||'')
-            if(Date.now()< cache.expires){
+            const cache = JSON.parse( localStorage.getItem('city_data_cache') || '{}'  );
+            
+            if(  Date.now() < cache.expires){
                 dispatch(setCityData(cache.data))
                 return
             }
@@ -114,7 +116,7 @@
                 .then(res=>res.json())
                 .then(cityData=>{
                     dispatch(setCityData(cityData));
-                    localStorage.getItem(
+                    localStorage.setItem(
                         'city_data_cache',
                         JSON.stringify({
                             expires: Date.now()+60*1000,
