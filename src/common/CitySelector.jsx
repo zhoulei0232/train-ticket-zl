@@ -1,4 +1,4 @@
-import  React ,{useState , useMemo ,useEffect ,memo} from  'react';
+import  React ,{useState , useMemo ,useEffect ,memo, useCallback} from  'react';
 import  './CitySelector.css';
 import classnames from 'classnames';
 import PropTypes  from 'prop-types';
@@ -24,7 +24,7 @@ const CitySection =  memo( (props)=>{
     } = props ;
     return (
         <ul  className="city-ul">
-            <li  className="city-li"  key={title}>
+            <li  className="city-li"  key="title"   data-cate={title}>
                 {title}
             </li>
             {
@@ -45,10 +45,30 @@ CitySection.prototypes={
     onSelect:PropTypes.func.isRequired
 }
 
+const  AlphaIndex = memo((props)=>{
+    const {
+        alpha,
+        onClick
+    } = props ;
+    return (
+        <i  className="city-index-item"  onClick={()=>onClick(alpha)} >
+            {alpha}
+        </i>
+    )
+})
+const alphabet = Array.from(new Array(26),(ele,index)=>{
+    return String.fromCharCode(65+index);
+})
+AlphaIndex.prototypes={
+    alpha:PropTypes.string.isRequired,
+    onClick:PropTypes.func.isRequired
+    
+}
 const CityList = memo((props)=>{
     const {
         sections,
         onSelect,
+        toAlpha,
     } = props;
 
     return (
@@ -67,13 +87,99 @@ const CityList = memo((props)=>{
                     })
                 }
             </div>
+            <div  className="city-index">
+                {
+                    alphabet.map(alpha =>{
+                        return  (<AlphaIndex 
+                                    key={alpha} 
+                                    alpha = {alpha} 
+                                    onClick ={toAlpha} 
+                                />)
+                    })
+                }
+
+            </div>
         </div>
     )
 })
 CityList.prototypes={
     sections:PropTypes.array.isRequired,
-    onSelect:PropTypes.func.isRequired
+    onSelect:PropTypes.func.isRequired,
+    toAlpha:PropTypes.func.isRequired,
 }
+
+const SuggestItem = memo((props)=>{
+    const {
+        name,
+        onClick,
+    }=props;
+    return(
+        <li   className="city-suggest-li"  onClick={()=>onClick(name)}>
+            {name}
+        </li>
+    )
+}) 
+SuggestItem.prototypes={
+    name:PropTypes.string.isRequired,
+    onClick:PropTypes.func.isRequired,
+}
+
+const Suggest  = memo((props)=>{
+    const {
+        searchKey,
+        onSelect,  
+    }=props;
+    const [result, setResult] = useState([]);
+
+    useEffect(()=>{
+         
+        fetch('/rest/search?key='+ encodeURIComponent(searchKey))
+        .then(res => res.json() )
+        .then(data=>{
+            const {
+                result,
+                searchKey:sKey,
+            }=data;
+            if(sKey === searchKey){
+                setResult(result)
+            }
+        })
+      
+        setResult(result)
+    },[searchKey]);
+    
+    const fallBackResult = useMemo(()=>{
+        if(!result.length){
+            return [{
+                display:searchKey,
+            }];
+        }
+        return  result;
+    },[result , searchKey])
+    return( 
+        <div   className="city-suggest"   >
+            <ul  className="city-suggest-ul">
+                {
+                    fallBackResult.map((item,index)=>{
+                        return (
+                            <SuggestItem  
+                                key={index}
+                                name={item.display}
+                                onClick={onSelect}
+                            />
+                        )
+                    })
+                }
+            </ul>
+        </div>
+    )
+}) 
+Suggest.prototypes={
+    searchKey:PropTypes.string.isRequired,
+    onSelect:PropTypes.func.isRequired,
+}
+
+
 
 const CitySelector = memo((props)=>{
     const {
@@ -95,6 +201,11 @@ const CitySelector = memo((props)=>{
         fetchCityData();
     },[show,cityData,isLoading])
 
+    const toAlpha = useCallback( alpha =>{
+        document.querySelector(`[data-cate='${alpha}']`)
+            .scrollIntoView();
+    },[])
+
     const outputCitySections = ()=>{
         if(isLoading){
             return <div>loading</div>
@@ -104,11 +215,13 @@ const CitySelector = memo((props)=>{
                 <CityList 
                     sections = {cityData.cityList}
                     onSelect = {onSelect}
+                    toAlpha = {toAlpha}
                 />
             )
         }
         return <div>error</div>
     }
+
     return(
         <div  className={classnames('city-selector',{hidden:!show })}>
             <div  className="city-search">
@@ -124,7 +237,7 @@ const CitySelector = memo((props)=>{
                 </div>
                 <div  className="search-input-wrapper">
                     <input type="text"
-                        value={searchKey}
+                        value={key}
                         className="search-input"
                         placeholder="城市，车站的中文或拼音"
                         onChange = {e=>setSearchKey(e.target.value)}
@@ -136,6 +249,14 @@ const CitySelector = memo((props)=>{
                     &#xf063;
                 </i>
             </div>
+            {
+                Boolean(key) && (
+                    <Suggest 
+                       searchKey={key}
+                       onSelect ={key => onSelect(key)}
+                    />
+                )
+            }
             {outputCitySections()}
         </div>
     )
