@@ -25,7 +25,7 @@ const  DepartDate = memo((props)=>{
 
     return(
         <div  className="depart-date" onClick={onClick}>
-            <input  type="hidden"  name="date"  value="departDateString"/>
+            <input  type="hidden"  name="date"  value={departDateString}/>
             {departDateString}<span className="depart-week">{weekString}</span>
         </div>
     )

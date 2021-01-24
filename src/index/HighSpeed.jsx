@@ -25,7 +25,7 @@ export default function HightSpeed(props){
         </div>
     )
 }
-HightSpeed.protoType = {
+HightSpeed.propTypes = {
     highSpeed:PropTypes.bool.isRequired,
     toggle:PropTypes.func.isRequired,
 }
