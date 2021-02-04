@@ -32,7 +32,7 @@ function Day(props){
         </td>
     )
 }
-Day.prototypes = {
+Day.propTypes = {
     day: PropTypes.number ,
     onSelect:PropTypes.func.isRequired,
 }
@@ -52,7 +52,7 @@ function Week(props){
         </tr>
     )
 }
-Week.prototypes = {
+Week.propTypes = {
     days: PropTypes.array.isRequired,
     onSelect:PropTypes.func.isRequired,
 }
@@ -117,7 +117,7 @@ function Month(props){
         </table>
     )
 }
-Month.prototypes = {
+Month.propTypes = {
     startingTimeInMonth: PropTypes.number.isRequired,
     onSelect:PropTypes.func.isRequired,
 }
@@ -164,7 +164,7 @@ export  default  function  DateSelector(props){
     )
 }
 
-DateSelector.prototypes = {
+DateSelector.propTypes = {
     show: PropTypes.bool.isRequired,
     onSelect:PropTypes.func.isRequired,
     onBack:PropTypes.func.isRequired,

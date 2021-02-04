@@ -4,10 +4,10 @@ import {
 import {h0} from './fp';
 
 
-export default  function useNav(departDate,dispatch,prevDate,nextDate  ){
+export default  function useNavTicket(departDate,dispatch,prevDate,nextDate  ){
      
-    const isPrevDisabled = h0(departDate) <= h0();
-    const isNextDisabled = h0(departDate) - h0() > 20*86400*1000;
+    const isPrevDisabled = false;
+    const isNextDisabled = false;
  
     const prev = useCallback( ()=>{
         if(isPrevDisabled){

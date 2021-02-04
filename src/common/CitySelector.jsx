@@ -11,7 +11,7 @@ const CityItem  = memo((props)=>{
         </li>
     )
 })
-CityItem.prototypes={
+CityItem.propTypes={
     name:PropTypes.sting,
     onSelect: PropTypes.func.isRequired
 }
@@ -39,7 +39,7 @@ const CitySection =  memo( (props)=>{
         </ul>
     )
 })
-CitySection.prototypes={
+CitySection.propTypes={
     title:PropTypes.string.isRequired,
     cities:PropTypes.array,
     onSelect:PropTypes.func.isRequired
@@ -59,7 +59,7 @@ const  AlphaIndex = memo((props)=>{
 const alphabet = Array.from(new Array(26),(ele,index)=>{
     return String.fromCharCode(65+index);
 })
-AlphaIndex.prototypes={
+AlphaIndex.propTypes={
     alpha:PropTypes.string.isRequired,
     onClick:PropTypes.func.isRequired
     
@@ -102,7 +102,7 @@ const CityList = memo((props)=>{
         </div>
     )
 })
-CityList.prototypes={
+CityList.propTypes={
     sections:PropTypes.array.isRequired,
     onSelect:PropTypes.func.isRequired,
     toAlpha:PropTypes.func.isRequired,
@@ -119,7 +119,7 @@ const SuggestItem = memo((props)=>{
         </li>
     )
 }) 
-SuggestItem.prototypes={
+SuggestItem.propTypes={
     name:PropTypes.string.isRequired,
     onClick:PropTypes.func.isRequired,
 }
@@ -174,7 +174,7 @@ const Suggest  = memo((props)=>{
         </div>
     )
 }) 
-Suggest.prototypes={
+Suggest.propTypes={
     searchKey:PropTypes.string.isRequired,
     onSelect:PropTypes.func.isRequired,
 }
@@ -262,7 +262,7 @@ const CitySelector = memo((props)=>{
     )
 })
 
-CitySelector.prototypes={
+CitySelector.propTypes={
         show:PropTypes.bool.isRequired,
         cityData: PropTypes.object,
         isLoading:PropTypes.bool.isRequired,
